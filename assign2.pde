@@ -1,18 +1,5 @@
-PImage skyImage;
-PImage soilImage;
-PImage lifeImage;
-PImage soldierImage;
-PImage titleImage;
-PImage startNormal;
-PImage startHovered;
-PImage cabbage;
-PImage groundhogImage;
-PImage groundhogDown;
-PImage groundhogLeft;
-PImage groundhogRight;
-PImage gameover;
-PImage restartNormal;
-PImage restartHovered;
+PImage title, gameover, startNormal, startHovered, restartNormal, restartHovered;
+PImage bg,skyImage,titleImage,lifeImage,cabbageImage,groundhogImage,stone1Image,stone2Image,groundhogLeft,groundhogRight,groundhogDown,soilImage,soldierImage;
 
 
 boolean upPressed, downPressed, rightPressed, leftPressed;
@@ -20,20 +7,19 @@ boolean upPressed, downPressed, rightPressed, leftPressed;
 final int GAME_START = 0;
 final int GAME_RUN = 1;
 final int GAME_OVER = 2;
-
-
 int gameState = GAME_START;
+
+final int STOP=0; 
+final int DOWNWARD=1;
+final int LEFTWARD=2; 
+final int RIGHTWARD=3;
+int movement=STOP;
 
 int soldierX=-80;
 int soldierY=floor(random(2,6))*80;
 
-float robotX=random(400)+80;
-int robotY=floor(random(4))+1;
-
-float lightX=robotX+20;
-float lightY=480-80*robotY;
-float lightDistance;
-float lightSpeed;
+float robotX=floor(random(3,8))*80;
+int robotY=floor(random(2,6))*80;
 
 float cabbageX=floor(random(0,8))*80;
 float cabbageY=floor(random(2,6))*80;
@@ -57,7 +43,7 @@ void setup() {
   titleImage = loadImage("img/title.jpg");
   startNormal = loadImage("img/startNormal.png");
   startHovered = loadImage("img/startHovered.png");
-  cabbage = loadImage("img/cabbage.png");
+  cabbageImage = loadImage("img/cabbage.png");
   groundhogImage=loadImage("img/groundhogIdle.png");
   groundhogDown=loadImage("img/groundhogDown.png");
   groundhogLeft=loadImage("img/groundhogLeft.png");
@@ -78,7 +64,7 @@ switch(gameState){
     case GAME_START:
     
     
-      if(mouseX > 144 && mouseX < 392
+      if(mouseX > 248 && mouseX < 392
       && mouseY > 360 && mouseY < 420){
         image(titleImage,0,0);
         image(startHovered,248,360);
@@ -117,7 +103,7 @@ switch(gameState){
     ellipse(590,50,120,120);
     
     //cabbage
-    image(cabbage,cabbageX,cabbageY);
+    image(cabbageImage,cabbageX,cabbageY);
     
     //soldier
     image(soldierImage,soldierX,soldierY);
@@ -126,7 +112,27 @@ switch(gameState){
       soldierX=-80;
     }
   
-    
+    switch(movement){
+        case STOP:
+          groundhogImage = loadImage("img/groundhogIdle.png");
+          groundhogY+=0;
+        break;
+        case DOWNWARD:
+          groundhogY+=5;
+          groundhogImage = loadImage("img/groundhogDown.png");
+          if(groundhogY%80==0){movement=STOP;}
+        break;
+        case LEFTWARD:
+          groundhogX-=5;
+          groundhogImage = loadImage("img/groundhogLeft.png");
+          if(groundhogX%80==0){movement=STOP;}
+        break;
+        case RIGHTWARD:
+          groundhogX+=5;
+          groundhogImage = loadImage("img/groundhogRight.png");
+          if(groundhogX%80==0){movement=STOP;}
+        break;
+     }
     //groundhog
     image(groundhogImage,groundhogX,groundhogY);
     
@@ -134,23 +140,14 @@ switch(gameState){
     
     
    
-      if(downPressed){
-        
-        groundhogY += 80;
-        downPressed = false;
+      if(downPressed){        
         if(groundhogY >=400) groundhogY = 400;
       }
       
-      if(leftPressed){
-        
-        groundhogX -= 80;
-        leftPressed = false;
+      if(leftPressed){       
         if(groundhogX <=0) groundhogX = 0;
       }
       if(rightPressed){
-        
-        groundhogX += 80;
-        rightPressed = false;
         if(groundhogX >=560) groundhogX = 560;
       }
       
@@ -158,8 +155,6 @@ switch(gameState){
         groundhogX=320;
         groundhogY=80;
         lifeX=lifeX-70;
-        
-        
         
       }
       
@@ -178,16 +173,11 @@ switch(gameState){
       }
       break;
         
-      
-      
-      
-      
-      
-      
+    
     
     
     case GAME_OVER:
-    if(mouseX > 144 && mouseX < 392
+    if(mouseX > 248 && mouseX < 392
       && mouseY > 360 && mouseY < 420){
         image(gameover,0,0);
         image(restartHovered,248,360);
@@ -207,33 +197,27 @@ switch(gameState){
         
       }
 
-
-    
-    
-    
-    
-  
-  
    
       
 }
-		// Game Start
-
-		// Game Run
-
-		// Game Lose
+	
 
 void keyPressed(){
+  if(groundhogX%80==0 && groundhogY%80==0){
   switch(keyCode){
     case DOWN:
     downPressed = true;
+    if(groundhogY+80<height){movement=DOWNWARD;}
     break;
     case RIGHT:
     rightPressed = true;
+    if(groundhogX+80<width){movement=RIGHTWARD;}
     break;
     case LEFT:
     leftPressed = true;
+    if(groundhogX>0){movement=LEFTWARD;}
     break;
+  }
   }
 }
 
