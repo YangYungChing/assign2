@@ -186,7 +186,8 @@ switch(gameState){
           lifeX=10;
           cabbageX=floor(random(0,8))*80;
           cabbageY=floor(random(2,6))*80;
-          
+          soldierY=floor(random(2,6))*80;
+          movement=STOP;
         }
       }else{
         image(gameover,0,0);
